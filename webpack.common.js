@@ -4,13 +4,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: {
-    app: './src/main.js'
+    app: path.resolve(__dirname, 'src/main.js'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[chunkhash].js'
+    filename: '[name].[hash].js',
+    publicPath: '/',
   },
-  // devtool: 'inline-source-map',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -21,20 +22,31 @@ module.exports = {
         }
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader'
-          }
-        ]
-      },
-      {
-        test: /\.(ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.(ico|png|jpg|jpeg|gif|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'url-loader',
         options: {
-          name: '[name].[ext]',
+          name: '[name].[hash].[ext]',
           limit: 10000,
+          outputPath: 'images/',
+        }
+      },
+      {
+        test: /\.(woff|woff2|ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader',
+        options: {
+          name: '[name].[hash].[ext]',
+          limit: 10000,
+          outputPath: 'fonts/',
         },
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: "html-loader",
+            options: { minimize: true }
+          }
+        ]
       }
     ]
   },
